@@ -3,6 +3,7 @@ import './globals.css'
 import { Providers } from '@/components/providers'
 import { cn } from '@/lib/utils'
 import { GeistSans } from 'geist/font'
+import { ClerkProvider } from '@clerk/nextjs'
 
 export const metadata: Metadata = {
   title: 'Hype Stack',
@@ -15,15 +16,22 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body
-        className={cn(
-          'min-h-screen bg-stone-50 dark:bg-stone-900 font-sans antialiased',
-          GeistSans.className
-        )}
-      >
-        <Providers>{children}</Providers>
-      </body>
-    </html>
+    <ClerkProvider
+    // appearance={{
+    //   baseTheme: dark,
+    //   variables: { colorBackground: '#292524', shadowShimmer: '#0c0a09' },
+    // }}
+    >
+      <html lang="en">
+        <body
+          className={cn(
+            'min-h-screen bg-stone-50 text-stone-900 dark:text-stone-100 dark:bg-stone-900 font-sans antialiased',
+            GeistSans.className
+          )}
+        >
+          <Providers>{children}</Providers>
+        </body>
+      </html>
+    </ClerkProvider>
   )
 }
