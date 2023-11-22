@@ -32,18 +32,18 @@ export default async function RootLayout({
           {user ? (
             <>
               <Button asChild size="xs">
-                <Link href="/lists">Go to app</Link>
+                <Link href="/app">Go to app</Link>
               </Button>
               <UserButton afterSignOutUrl="/" />
             </>
           ) : (
             <>
-              <SignInButton redirectUrl="/lists" mode="modal">
+              <SignInButton redirectUrl="/app" mode="modal">
                 <Button size="xs" variant="ghost">
                   Sign in
                 </Button>
               </SignInButton>
-              <SignUpButton redirectUrl="/lists" mode="modal">
+              <SignUpButton redirectUrl="/app" mode="modal">
                 <Button size="xs" variant="default">
                   Try for free
                 </Button>

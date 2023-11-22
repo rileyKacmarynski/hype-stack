@@ -6,9 +6,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import useStore from '@/lib/hooks/use-store'
 import { motion } from 'framer-motion'
 import React, { useRef, useState } from 'react'
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 
 const DEFAULT_WIDTH = 200
 const MIN_WIDTH = DEFAULT_WIDTH - 50
@@ -20,55 +22,53 @@ export type SideNavState = {
   collapsed: boolean
   lastFullWidth: number
   currentWidth: number
+  openNav: () => void
+  closeNav: () => void
+  toggleNav: () => void
 }
 
-const useSideNav = create<SideNavState>()((set) => ({
-  collapsed: false,
-  lastFullWidth: DEFAULT_WIDTH,
-  currentWidth: DEFAULT_WIDTH,
-}))
+// TODO: This is not ideal
+// SSR default and load local storage on hydrate
+// leads to icky experience
+const useSideNav = create<SideNavState>()(
+  persist(
+    (set, get) => ({
+      collapsed: false,
+      lastFullWidth: DEFAULT_WIDTH,
+      currentWidth: DEFAULT_WIDTH,
+      openNav: () =>
+        set({ collapsed: false as boolean, currentWidth: get().lastFullWidth }),
+      closeNav: () =>
+        set({
+          collapsed: true as boolean,
+          lastFullWidth: get().currentWidth,
+          currentWidth: COLLAPSED_WIDTH,
+        }),
+      // this is just repeat of open and close
+      // not sure how to share this code, meh, it works
+      toggleNav: () => (get().collapsed ? get().openNav() : get().closeNav()),
+    }),
+    {
+      name: 'hype-stack-panel',
+    }
+  )
+)
 
-export const openNav = () =>
-  useSideNav.setState(({ lastFullWidth }) => ({
-    collapsed: false,
-    currentWidth: lastFullWidth,
-  }))
-
-export const closeNav = () =>
-  useSideNav.setState(({ currentWidth }) => ({
-    collapsed: true,
-    lastFullWidth: currentWidth,
-    currentWidth: COLLAPSED_WIDTH,
-  }))
-
-export const toggleNav = () => {
-  const { collapsed, currentWidth, lastFullWidth } = useSideNav.getState()
-
-  console.log('toggling nav', collapsed, currentWidth, lastFullWidth)
-
-  if (collapsed) {
-    openNav()
-  } else {
-    console.log('closing nav')
-    closeNav()
-  }
+// I don't want to expose this guy to clients
+function setCurrentWidth(width: number) {
+  return useSideNav.setState(() => ({ currentWidth: width }))
 }
-
-const setCurrentWidth = (width: number) =>
-  useSideNav.setState(() => ({ currentWidth: width }))
 
 export default function SidePanel({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLElement>(null)
-  const { collapsed, currentWidth } = useSideNav()
-  // const [currentWidth, setCurrentWidth] = useState(DEFAULT_WIDTH)
-  // set this shit while dragging
   const [dragging, setDragging] = useState(false)
+  const sideNavStore = useStore(useSideNav, (state) => state)
 
   const mouseMoveHandler = (e: MouseEvent) => {
     if (!ref.current) return
 
     // only allow resize when uncollapsed
-    if (collapsed) return
+    if (sideNavStore?.collapsed) return
 
     setDragging(true)
 
@@ -77,17 +77,12 @@ export default function SidePanel({ children }: { children: React.ReactNode }) {
 
     if (e.clientX < MAX_WIDTH && e.clientX > MIN_WIDTH) {
       ref.current.style.width = `${e.clientX}px`
-      // will we run into problems here?
-      // setCurrentWidth(e.clientX)
     }
   }
 
   const mouseUpHandler = (e: MouseEvent) => {
     if (!ref.current) return
 
-    console.log('end drag', e)
-
-    console.log('collapsed', collapsed)
     if (dragging) {
       setCurrentWidth(e.clientX)
       setDragging(false)
@@ -96,35 +91,16 @@ export default function SidePanel({ children }: { children: React.ReactNode }) {
     }
   }
 
-  const mouseDownHandler = (e: any) => {
-    if (!ref.current) {
-      return
-    }
-  }
-
-  // const toggleNav = () => {
-  //   if (!ref.current) return
-
-  //   if (!collapsed) {
-  //     setCollapsed(true)
-  //     ref.current.style.width = `${COLLAPSED_WIDTH}px`
-  //   } else {
-  //     setCollapsed(false)
-  //     ref.current.style.width = `${currentWidth}px`
-  //   }
-  // }
-
   return (
     <aside
       ref={ref}
-      style={{ width: currentWidth }}
+      style={{ width: sideNavStore?.currentWidth ?? DEFAULT_WIDTH }}
       className="relative bg-stone-100 dark:bg-stone-900 group transition-[width] duration-250"
     >
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
             <motion.div
-              onTapStart={mouseDownHandler}
               onTap={mouseUpHandler}
               onDrag={mouseMoveHandler}
               drag="x"
@@ -133,7 +109,7 @@ export default function SidePanel({ children }: { children: React.ReactNode }) {
                 right: 0,
               }}
               dragElastic={0}
-              onDoubleClick={toggleNav}
+              onDoubleClick={sideNavStore?.toggleNav}
               className="absolute -right-1 h-full w-2 group/handle flex justify-center"
             >
               <div className="group-hover/handle:w-1 group-active/handle:w-1 group-hover/handle:cursor-col-resize dark:group-active/handle:bg-stone-700  group-active/handle:bg-stone-300 origin-center duration-250 bg-stone-200 dark:bg-stone-800 transition-all w-[1px] h-full " />
@@ -141,7 +117,7 @@ export default function SidePanel({ children }: { children: React.ReactNode }) {
           </TooltipTrigger>
           <TooltipContent className="absolute w-[175px] top-4 left-4">
             <div className="text-xs font-medium text-stone-500 dark:text-stone-300">
-              {collapsed ? (
+              {sideNavStore?.collapsed ? (
                 <p>
                   <span className="font-semibold text-stone-900 dark:text-stone-100">
                     double-click

@@ -1,5 +1,5 @@
 import Logo from '@/app/(marketing)/_components/logo'
-import SidePanel from '@/app/lists/_components/side-panel'
+import SidePanel from '@/app/app/_components/side-panel'
 import ThemeToggle from '@/components/theme-toggle'
 import { cn } from '@/lib/utils'
 import { UserButton, currentUser } from '@clerk/nextjs'
@@ -36,14 +36,7 @@ export default async function RootLayout({
         <nav className="truncate">nav goes here</nav>
         <ThemeToggle className="mt-auto -ml-1" />
       </SidePanel>
-      <div className="flex-1">
-        <header>
-          <div className="px-4 h-8 flex text-stone-800 items-center text-sm">
-            Journal
-          </div>
-        </header>
-        <main>{children}</main>
-      </div>
+      <div className="flex-1 flex flex-col">{children}</div>
     </div>
   )
 }
