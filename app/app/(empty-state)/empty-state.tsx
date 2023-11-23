@@ -1,7 +1,6 @@
-import EmptyIllustration from '@/app/app/(empty-state)/empty-illustration'
-import { createList } from '@/app/app/actions'
+import EmptyIllustration from './empty-illustration'
+import { createListWithRedirect } from '../actions'
 import { Button } from '@/components/ui/button'
-import { currentUser } from '@clerk/nextjs'
 import { PlusIcon } from 'lucide-react'
 
 export default async function EmptyState() {
@@ -13,7 +12,7 @@ export default async function EmptyState() {
       <p className="text-stone-700 dark:text-stone-300">
         Doesn&apos;t look like there are any lists here.
       </p>
-      <form action={createList}>
+      <form action={createListWithRedirect}>
         <Button type="submit">
           <PlusIcon className="mr-2 h-4 w-4" /> Create a new one
         </Button>

@@ -7,6 +7,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import useStore from '@/lib/hooks/use-store'
+import { cn } from '@/lib/utils'
 import { motion } from 'framer-motion'
 import React, { useRef, useState } from 'react'
 import { create } from 'zustand'
@@ -15,8 +16,8 @@ import { persist } from 'zustand/middleware'
 const DEFAULT_WIDTH = 200
 const MIN_WIDTH = DEFAULT_WIDTH - 50
 const MAX_WIDTH = DEFAULT_WIDTH + 100
-// TODO: Lets try to do a container query or something to make things work
-export const COLLAPSED_WIDTH = 56
+// don't change this or things wont be centered
+export const COLLAPSED_WIDTH = 44
 
 export type SideNavState = {
   collapsed: boolean
@@ -59,7 +60,13 @@ function setCurrentWidth(width: number) {
   return useSideNav.setState(() => ({ currentWidth: width }))
 }
 
-export default function SidePanel({ children }: { children: React.ReactNode }) {
+export default function SidePanel({
+  children,
+  className,
+}: {
+  children: React.ReactNode
+  className?: string
+}) {
   const ref = useRef<HTMLElement>(null)
   const [dragging, setDragging] = useState(false)
   const sideNavStore = useStore(useSideNav, (state) => state)
@@ -110,9 +117,9 @@ export default function SidePanel({ children }: { children: React.ReactNode }) {
               }}
               dragElastic={0}
               onDoubleClick={sideNavStore?.toggleNav}
-              className="absolute -right-1 h-full w-2 group/handle flex justify-center"
+              className="absolute hover:cursor-col-resize z-10 -right-1.5 h-full w-3 group/handle flex justify-center"
             >
-              <div className="group-hover/handle:w-1 group-active/handle:w-1 group-hover/handle:cursor-col-resize dark:group-active/handle:bg-stone-700  group-active/handle:bg-stone-300 origin-center duration-250 bg-stone-200 dark:bg-stone-800 transition-all w-[1px] h-full " />
+              <div className="group-hover/handle:w-1 group-active/handle:w-1 dark:group-active/handle:bg-stone-700  group-active/handle:bg-stone-300 origin-center duration-250 bg-stone-200 dark:bg-stone-800 transition-all w-[1px] h-full " />
             </motion.div>
           </TooltipTrigger>
           <TooltipContent className="absolute w-[175px] top-4 left-4">
@@ -144,7 +151,9 @@ export default function SidePanel({ children }: { children: React.ReactNode }) {
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
-      <div className="px-3 h-full flex flex-col truncate">{children}</div>
+      <div className={cn('h-full flex flex-col truncate', className)}>
+        {children}
+      </div>
     </aside>
   )
 }

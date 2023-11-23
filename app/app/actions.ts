@@ -1,10 +1,9 @@
 'use server'
 
-import { currentUser } from '@clerk/nextjs'
 import { db } from '@/db'
 import { lists, profiles } from '@/db/schema'
-import { desc, eq } from 'drizzle-orm'
 import { redirect } from 'next/navigation'
+import { getCurrentProfile } from '@/app/app/queries'
 
 export async function createList() {
   const profile = await getCurrentProfile()
@@ -15,14 +14,11 @@ export async function createList() {
     name: 'Untitled',
   })
 
-  redirect(`/app/${insertId}`)
+  return insertId
 }
 
-async function getCurrentProfile() {
-  const clerkUser = await currentUser()
-  if (!clerkUser) return null
+export async function createListWithRedirect() {
+  const insertId = await createList()
 
-  return db.query.profiles.findFirst({
-    where: eq(profiles.clerkId, clerkUser.id),
-  })
+  redirect(`/app/${insertId}`)
 }
