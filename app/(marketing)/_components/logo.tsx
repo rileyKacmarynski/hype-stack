@@ -26,7 +26,7 @@ export default function Logo() {
           <path d="m2 2 7.586 7.586" />
           <circle cx="11" cy="11" r="2" />
         </svg>
-        <span>pen boi</span>
+        <span>list guy</span>
       </Link>
     </Button>
   )

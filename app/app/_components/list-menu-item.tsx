@@ -17,10 +17,12 @@ import {
 } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
 import { PopoverAnchor } from '@radix-ui/react-popover'
+import { AnimatePresence, MotionConfig, motion } from 'framer-motion'
 import {
   ChevronRight,
   ChevronRightIcon,
   ListIcon,
+  Loader2Icon,
   MoreHorizontalIcon,
   PenIcon,
   PenSquareIcon,
@@ -38,6 +40,7 @@ import React, {
 } from 'react'
 import { useFormStatus } from 'react-dom'
 import { create, createStore, useStore } from 'zustand'
+import { useRouter } from 'next/navigation'
 
 type RenameStore = {
   renaming: boolean
@@ -128,12 +131,18 @@ function RenamePopover({
 }) {
   const { renaming, setRenaming } = useRenameStore()
   const [isPending, startTransition] = useTransition()
+  const router = useRouter()
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
     const data = new FormData(e.currentTarget)
     startTransition(async () => {
       await updateList(data)
       setRenaming(false)
+      // I though the revalidate path was supposed to revalidate
+      // the [id]/layout too, but it only works when using the form action
+      // not the event handler
+      router.refresh()
     })
   }
 
@@ -152,6 +161,7 @@ function RenamePopover({
             type="text"
             defaultValue={list.name ?? 'Untitled'}
             className="p-1 h-8"
+            disabled={isPending}
           />
           <input name="id" type="hidden" value={list.id} />
           <Button
@@ -160,8 +170,29 @@ function RenamePopover({
             size="icon"
             className="h-8 "
             type="submit"
+            disabled={isPending}
           >
-            <PenSquareIcon className="h-6 w-6 text-stone-500 dark:text-stone-400" />
+            <MotionConfig transition={{ duration: 0.125 }}>
+              <AnimatePresence mode="wait">
+                {!isPending ? (
+                  <motion.div
+                    key="pen"
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                  >
+                    <PenSquareIcon className="h-6 w-6 text-stone-500 dark:text-stone-400" />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="loader"
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                  >
+                    <Loader2Icon className="h-6 w-6 text-stone-500 animate-spin dark:text-stone-400" />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </MotionConfig>
           </Button>
         </form>
       </PopoverContent>
