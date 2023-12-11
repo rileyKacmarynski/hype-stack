@@ -37,6 +37,7 @@ export async function deleteList(id: number) {
     .where(and(eq(lists.id, id), eq(lists.authorId, profile.id)))
 
   revalidatePath('/app', 'layout')
+  revalidatePath('/app/[id]', 'layout')
 }
 
 const updateSchema = z.object({
@@ -67,4 +68,5 @@ export async function updateList(form: FormData) {
     .where(and(eq(lists.id, id), eq(lists.authorId, profile.id)))
 
   revalidatePath('/app', 'layout')
+  revalidatePath('/app/[id]', 'layout')
 }

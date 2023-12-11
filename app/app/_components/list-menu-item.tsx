@@ -139,10 +139,6 @@ function RenamePopover({
     startTransition(async () => {
       await updateList(data)
       setRenaming(false)
-      // I though the revalidate path was supposed to revalidate
-      // the [id]/layout too, but it only works when using the form action
-      // not the event handler
-      router.refresh()
     })
   }
 
