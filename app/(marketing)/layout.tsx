@@ -5,7 +5,6 @@ import { cn } from '@/lib/utils'
 import {
   SignInButton,
   SignUpButton,
-  SignedIn,
   UserButton,
   currentUser,
 } from '@clerk/nextjs'
