@@ -1,33 +1,33 @@
-'use client'
+"use client";
 
-import { Button, ButtonClasses } from '@/components/ui/button'
-import useIsMounted from '@/lib/hooks/use-is-mounted'
-import { useTheme } from 'next-themes'
-import { SunIcon, MoonIcon } from 'lucide-react'
-import { AnimatePresence, MotionConfig, Variants, motion } from 'framer-motion'
-import { cn } from '@/lib/utils'
+import { Button, ButtonClasses } from "@/components/ui/button";
+import useIsMounted from "@/lib/hooks/use-is-mounted";
+import { useTheme } from "next-themes";
+import { SunIcon, MoonIcon } from "lucide-react";
+import { AnimatePresence, MotionConfig, Variants, motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
-const MotionMoonIcon = motion(MoonIcon)
-const MotionSunIcon = motion(SunIcon)
+const MotionMoonIcon = motion(MoonIcon);
+const MotionSunIcon = motion(SunIcon);
 
 const toggleVariants: Variants = {
   visible: { opacity: 1 },
   hidden: { opacity: 0 },
-}
+};
 
 export default function ThemeToggle({
   className,
 }: {
-  className?: ButtonClasses
+  className?: ButtonClasses;
 }) {
-  const { resolvedTheme: theme, setTheme } = useTheme()
-  const isMounted = useIsMounted()
+  const { resolvedTheme: theme, setTheme } = useTheme();
+  const isMounted = useIsMounted();
   if (!isMounted) {
-    return null
+    return null;
   }
 
   function toggleTheme() {
-    setTheme(theme === 'dark' ? 'light' : 'dark')
+    setTheme(theme === "dark" ? "light" : "dark");
   }
 
   return (
@@ -36,16 +36,16 @@ export default function ThemeToggle({
       variant="ghost"
       size="icon"
       className={cn(
-        'hover:bg-transparent dark:hover:bg-transparent',
-        className
+        "hover:bg-transparent dark:hover:bg-transparent",
+        className,
       )}
       aria-label={
-        theme === 'dark' ? 'switch to light theme' : 'switch to dark theme'
+        theme === "dark" ? "switch to light theme" : "switch to dark theme"
       }
     >
       <MotionConfig transition={{ duration: 0.15 }}>
         <AnimatePresence mode="wait">
-          {theme === 'light' ? (
+          {theme === "light" ? (
             <MotionMoonIcon
               key="moon"
               variants={toggleVariants}
@@ -65,5 +65,5 @@ export default function ThemeToggle({
         </AnimatePresence>
       </MotionConfig>
     </Button>
-  )
+  );
 }

@@ -5,10 +5,11 @@ import ThemeToggle from '@/components/theme-toggle'
 import { Button, ButtonProps } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { UserButton, currentUser } from '@clerk/nextjs'
-import { ListIcon, PlusIcon } from 'lucide-react'
-import Link from 'next/link'
+import { PlusIcon } from 'lucide-react'
 import { redirect } from 'next/navigation'
 import React from 'react'
+
+import ListMenuItem from '@/app/app/_components/list-menu-item'
 
 export default async function RootLayout({
   children,
@@ -21,8 +22,6 @@ export default async function RootLayout({
   }
 
   const lists = await getUserLists()
-
-  console.log(lists)
 
   return (
     <div className="flex min-h-screen ">
@@ -46,19 +45,7 @@ export default async function RootLayout({
         <div>
           <nav className="flex flex-col mb-1">
             {lists.map((l) => (
-              <Button
-                key={l.id}
-                variant="ghost"
-                className="w-full rounded-sm py-1 px-2 hover:bg-stone-200 hover:text-stone-500 group gap-2 justify-start h-auto"
-                asChild
-              >
-                <Link href={`/app/${l.id}`}>
-                  <ListIcon className="h-5 w-5 group-hover:text-stone-400 text-stone-400" />
-                  <span className="truncate sr-only @[100px]:not-sr-only">
-                    {l.name}
-                  </span>
-                </Link>
-              </Button>
+              <ListMenuItem key={l.id} list={l} />
             ))}
           </nav>
           <form action={createList}>
