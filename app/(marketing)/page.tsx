@@ -1,5 +1,11 @@
-import Image from 'next/image'
+import Main from '@/app/(marketing)/_components/main'
+import Features from '@/app/(marketing)/_components/features'
 
 export default function Home() {
-  return <h1>This will be the marketing page or something</h1>
+  return (
+    <div className="flex flex-col gap-20">
+      <Main />
+      <Features />
+    </div>
+  )
 }

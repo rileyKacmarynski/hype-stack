@@ -148,6 +148,8 @@ function RenamePopover({
       {children}
       <PopoverContent className="p-1">
         <form
+          // I can show a loading indicator, but there's
+          // no way to hide the popover after the form submit
           // action={updateList}
           onSubmit={onSubmit}
           className="flex text-stone-600 dark:text-stone-300 gap-1 items-center"

@@ -7,6 +7,7 @@ import {
   mysqlTableCreator,
   serial,
 } from 'drizzle-orm/mysql-core'
+import { ListenOptions } from 'net'
 
 // export const hypeStack = mysqlSchema('hype_stack')
 const hypestackTable = mysqlTableCreator((name) => `hype_stack_${name}`)
@@ -25,6 +26,9 @@ export const profiles = hypestackTable('profiles', {
     .default(sql`CURRENT_TIMESTAMP`),
 })
 
+export type Profile = typeof profiles.$inferSelect
+export type CreateProfile = typeof profiles.$inferInsert
+
 export const lists = hypestackTable('lists', {
   id: serial('id').primaryKey(),
   authorId: int('author_id').notNull(),
@@ -36,6 +40,9 @@ export const lists = hypestackTable('lists', {
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),
 })
+
+export type List = typeof lists.$inferSelect
+export type CreateList = typeof lists.$inferInsert
 
 export const listItems = hypestackTable('list_items', {
   id: serial('id').primaryKey(),
@@ -49,6 +56,9 @@ export const listItems = hypestackTable('list_items', {
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),
 })
+
+export type ListItem = typeof listItems.$inferSelect
+export type CreateListItem = typeof listItems.$inferInsert
 
 export const profileRelations = relations(profiles, ({ many }) => ({
   lists: many(lists),
