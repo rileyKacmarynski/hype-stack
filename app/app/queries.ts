@@ -13,12 +13,18 @@ export const getList = cache(async (id: number) => {
     where: eq(lists.id, id),
   })
 
+  // this component queries for the
+  // most recently update list and opens that one
+  // not sure I like relying on the server component
+  // to have that logic
   if (!list) {
-    redirect('/')
+    redirect('/app')
   }
 
   return list
 })
+
+export type ListWithItems = Awaited<ReturnType<typeof getList>>
 
 export const getUserLists = cache(async () => {
   const profile = await getCurrentProfile()

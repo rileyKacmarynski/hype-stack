@@ -29,13 +29,8 @@ export default function Main() {
             </Button>
           </div>
         </div>
-        <div className="relative -z-10 mx-auto aspect-video max-w-4xl overflow-hidden rounded-t-xl object-cover object-center">
-          <Image
-            alt="ListMaker App"
-            className=""
-            fill={true}
-            src="/iewek-gnos-hhUx08PuYpc-unsplash.jpg"
-          />
+        <div className="relative mx-auto aspect-video max-w-4xl overflow-hidden rounded-t-xl object-cover object-center">
+          <Image alt="ListMaker App" className="" fill={true} src="/list.png" />
         </div>
       </div>
     </section>

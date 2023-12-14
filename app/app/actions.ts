@@ -7,7 +7,6 @@ import { getCurrentProfile } from '@/app/app/queries'
 import { revalidatePath } from 'next/cache'
 import { and, eq } from 'drizzle-orm'
 import { z } from 'zod'
-import { format } from 'path'
 
 export async function createList() {
   const profile = await getCurrentProfile()

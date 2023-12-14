@@ -4,13 +4,13 @@ import { GaugeIcon, AppWindowIcon, UsersIcon } from 'lucide-react'
 
 export default function Features() {
   return (
-    <section className="w-full py-12 px-6 md:px-12">
+    <section className="w-full py-10 px-6 md:px-12">
       <div className="container mx-auto space-y-6">
         <h2 className="text-3xl font-semibold text-center text-stone-700 dark:text-stone-200">
-          Our Services
+          Features
         </h2>
         <p className="text-lg text-center text-stone-600 dark:text-stone-300">
-          We provide high quality services that meet your needs
+          We provide high quality features that meet your needs
         </p>
         <div className="grid md:grid-cols-3 gap-6">
           <Card>
