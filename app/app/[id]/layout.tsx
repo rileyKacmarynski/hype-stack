@@ -16,16 +16,12 @@ export default async function Layout({
 
   return (
     <>
-      <header className="flex py-1  px-4  gap-2">
-        <div className="gap-2 flex border-b border-b-stone-200 dark:border-b-stone-800 text-stone-700 dark:text-stone-300 items-center text-sm">
-          <ListIcon className="h-5 w-5 shrink-0 text-stone-400" />
-          {list.name}
-        </div>
+      <header className="flex py-1 px-6 border-b border-stone-200 dark:border-stone-800 border-1 gap-2">
         <div className="ml-auto">
           <DropdownWrapper list={list} />
         </div>
       </header>
-      <main className="flex-1 py-6 px-4">{children}</main>
+      <main className="flex-1 py-6">{children}</main>
     </>
   )
 }

@@ -80,7 +80,7 @@ function DeleteItem({ id, text }: { id: number; text: string | null }) {
   }
 
   return (
-    <form onSubmit={onDelete}>
+    <form className="top-[2.5px] relative" onSubmit={onDelete}>
       <input type="hidden" name="listItemId" value={id} />
       <Button
         variant="ghost"
