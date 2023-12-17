@@ -29,8 +29,21 @@ export default function Main() {
             </Button>
           </div>
         </div>
-        <div className="relative mx-auto aspect-video max-w-4xl overflow-hidden rounded-t-xl object-cover object-center">
-          <Image alt="ListMaker App" className="" fill={true} src="/list.png" />
+        <div className="pt-16">
+          <div className="relative mx-auto aspect-video max-w-4xl overflow-hidden rounded-t-xl object-cover object-center">
+            <Image
+              alt="ListMaker App"
+              className="dark:hidden block"
+              fill={true}
+              src="/app-light.png"
+            />
+            <Image
+              alt="ListMaker App"
+              className="hidden dark:block"
+              fill={true}
+              src="/app-dark.png"
+            />
+          </div>
         </div>
       </div>
     </section>

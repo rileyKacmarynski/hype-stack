@@ -9,6 +9,7 @@ import {
   currentUser,
 } from '@clerk/nextjs'
 import Link from 'next/link'
+import Header from './_components/header'
 
 export default async function RootLayout({
   children,
@@ -18,14 +19,8 @@ export default async function RootLayout({
   const user = await currentUser()
 
   return (
-    <div className="">
-      <div
-        className={cn(
-          'container fixed top-0 flex items-center justify-between h-14 bg-stone-50 dark:bg-stone-900 w-full border-b border-b-transparent'
-          // apply these if we're not at the top
-          // 'border-b-stone-200 dark:border-b-stone-700 '
-        )}
-      >
+    <div>
+      <Header>
         <Logo />
         <div className="flex items-center gap-4">
           {user ? (
@@ -51,8 +46,8 @@ export default async function RootLayout({
           )}
           <ThemeToggle className="-ml-2" />
         </div>
-      </div>
-      <main className="container pt-14">{children}</main>
+      </Header>
+      <main className="container pt-28">{children}</main>
     </div>
   )
 }

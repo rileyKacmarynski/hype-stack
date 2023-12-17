@@ -41,7 +41,7 @@ export async function createItem(form: FormData) {
     completed: false,
   })
 
-  revalidatePath('/app/[id]/')
+  revalidatePath('/app/[id]', 'page')
 
   return {
     text: '',
@@ -79,7 +79,7 @@ export async function toggleComplete(form: FormData) {
     })
     .where(eq(listItems.id, item.id))
 
-  revalidatePath('/app/[id]/')
+  revalidatePath('/app/[id]', 'page')
 }
 
 export async function deleteItem(form: FormData) {
@@ -103,5 +103,5 @@ export async function deleteItem(form: FormData) {
 
   await db.delete(listItems).where(eq(listItems.id, validatedFields.data))
 
-  revalidatePath('/app/[id]/')
+  revalidatePath('/app/[id]', 'page')
 }
