@@ -27,7 +27,6 @@ export default function ListDropdownMenu({
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          // TODO: make this work with the container query stuff so it doesn't show when collapsed
           className={cn(
             'ml-auto h-6 px-1 hover:bg-stone-300 hover:dark:bg-stone-700',
             showOnHover && 'text-transparent group-hover/item:text-current'

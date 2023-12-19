@@ -6,7 +6,6 @@ import {
   motion,
   useMotionValueEvent,
   useTransform,
-  useSpring,
 } from 'framer-motion'
 import { useState } from 'react'
 

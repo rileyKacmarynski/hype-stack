@@ -10,6 +10,7 @@ import { redirect } from 'next/navigation'
 import React from 'react'
 
 import ListMenuItem from '@/app/app/_components/list-menu-item'
+import AddListButton from './_components/add-list-button'
 
 export default async function RootLayout({
   children,
@@ -48,41 +49,11 @@ export default async function RootLayout({
               <ListMenuItem key={l.id} list={l} />
             ))}
           </nav>
-          <form action={createList}>
-            <PanelItem type="submit" Icon={PlusIcon}>
-              Add a list
-            </PanelItem>
-          </form>
+          <AddListButton />
         </div>
         <ThemeToggle className="mt-auto -ml-1" />
       </SidePanel>
       <div className="flex-1 flex flex-col">{children}</div>
     </div>
-  )
-}
-
-export interface PanelItemProps extends ButtonProps {
-  // TODO: I'll have to figure something out if we want emojis here too
-  Icon: typeof PlusIcon
-}
-
-export function PanelItem({
-  children,
-  Icon,
-  asChild,
-  ...buttonProps
-}: PanelItemProps) {
-  return (
-    <Button
-      variant="ghost"
-      className={cn(
-        'w-full rounded-sm py-1 px-2 hover:bg-stone-200 hover:text-stone-500 group gap-2 justify-start h-auto',
-        buttonProps?.className
-      )}
-      {...buttonProps}
-    >
-      <Icon className="h-5 w-5 group-hover:text-stone-400 text-stone-400" />
-      <span className="truncate sr-only @[100px]:not-sr-only">{children}</span>
-    </Button>
   )
 }

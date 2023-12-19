@@ -4,7 +4,7 @@ import { getCurrentProfile, getList } from '@/app/app/queries'
 import { db } from '@/db'
 import { listItems } from '@/db/schema'
 import { eq } from 'drizzle-orm'
-import { revalidatePath, unstable_noStore } from 'next/cache'
+import { revalidatePath, unstable_noStore as noStore } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
 
@@ -14,6 +14,8 @@ const insertSchema = z.object({
 })
 
 export async function createItem(form: FormData) {
+  noStore()
+
   const profile = await getCurrentProfile()
   if (!profile) redirect('/')
 

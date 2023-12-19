@@ -5,10 +5,16 @@ import { ListWithItems } from '@/app/app/queries'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
+import { ListItem } from '@/db/schema'
 import { cn } from '@/lib/utils'
 import { AnimatePresence, motion } from 'framer-motion'
 import { TrashIcon } from 'lucide-react'
-import React, { startTransition, useRef, useTransition } from 'react'
+import React, {
+  startTransition,
+  useOptimistic,
+  useRef,
+  useTransition,
+} from 'react'
 
 export default function ListView({ list }: { list: ListWithItems }) {
   return (
@@ -41,16 +47,13 @@ export default function ListView({ list }: { list: ListWithItems }) {
 }
 
 function ListItemForm({ listId }: { listId: number }) {
-  const [isPending, startTransition] = useTransition()
   const ref = useRef<HTMLFormElement | null>(null)
 
-  function onAddItem(e: React.FormEvent<HTMLFormElement>) {
+  async function onAddItem(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     const data = new FormData(e.currentTarget)
-    startTransition(async () => {
-      await createItem(data)
-      ref.current?.reset()
-    })
+    await createItem(data)
+    ref.current?.reset()
   }
 
   return (
