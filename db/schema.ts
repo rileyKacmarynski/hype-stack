@@ -33,6 +33,7 @@ export const lists = hypestackTable('lists', {
   id: serial('id').primaryKey(),
   authorId: int('author_id').notNull(),
   name: text('name'),
+  emoji: text('emoji').notNull(),
   updatedAt: timestamp('updated_at')
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),

@@ -1,7 +1,7 @@
 'use client'
 
 import { useRenameStore } from '@/app/app/_components/rename-store'
-import { deleteList } from '@/app/app/actions'
+import { deleteList, updateEmoji } from '@/app/app/actions'
 import { List } from '@/app/app/queries'
 import { Button } from '@/components/ui/button'
 import {

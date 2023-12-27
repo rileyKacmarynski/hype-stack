@@ -4,7 +4,7 @@ import { db } from '@/db'
 import { lists, profiles } from '@/db/schema'
 import { redirect } from 'next/navigation'
 import { getCurrentProfile } from '@/app/app/queries'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, unstable_noStore as noStore } from 'next/cache'
 import { and, eq } from 'drizzle-orm'
 import { z } from 'zod'
 
@@ -15,6 +15,7 @@ export async function createList() {
   const { insertId } = await db.insert(lists).values({
     authorId: profile.id,
     name: 'Untitled',
+    emoji: '📄',
   })
 
   revalidatePath('/app', 'layout')
@@ -64,6 +65,39 @@ export async function updateList(form: FormData) {
   await db
     .update(lists)
     .set({ name })
+    .where(and(eq(lists.id, id), eq(lists.authorId, profile.id)))
+
+  revalidatePath('/app', 'layout')
+  revalidatePath('/app/[id]', 'layout')
+}
+
+const updateEmojiSchema = z.object({
+  emoji: z.string().emoji(),
+  id: z.coerce.number().min(1),
+})
+
+// making this form data is probably a best practice
+// but this is easier for the emoji picker
+export async function updateEmoji(fields: {
+  id: string | number
+  emoji: string
+}) {
+  const validatedFields = updateEmojiSchema.safeParse(fields)
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+    }
+  }
+
+  const profile = await getCurrentProfile()
+  if (!profile) redirect('/')
+
+  const { emoji, id } = validatedFields.data
+
+  await db
+    .update(lists)
+    .set({ emoji })
     .where(and(eq(lists.id, id), eq(lists.authorId, profile.id)))
 
   revalidatePath('/app', 'layout')

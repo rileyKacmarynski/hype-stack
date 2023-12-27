@@ -13,6 +13,7 @@ import {
   useRenameStore,
 } from '@/app/app/_components/rename-store'
 import ListDropdownMenu from '@/app/app/_components/list-dropdown-menu'
+import ListEmoji from './list-emoji'
 
 export default function ListMenuItemWithRenameStore({ list }: { list: List }) {
   return (
@@ -39,7 +40,9 @@ function ListMenuItem({ list }: { list: List }) {
         asChild
       >
         <Link href={`/app/${list.id}`}>
-          <ListIcon className="h-5 w-5 shrink-0 text-stone-400" />
+          <div onClick={(e) => e.preventDefault()}>
+            <ListEmoji id={list.id}>{list.emoji}</ListEmoji>
+          </div>
           <span className="sr-only @[100px]:not-sr-only @[100px]:truncate">
             {list.name}
           </span>

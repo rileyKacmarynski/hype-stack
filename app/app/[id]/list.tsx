@@ -2,21 +2,18 @@
 
 import { createItem, deleteItem, toggleComplete } from '@/app/app/[id]/actions'
 import { ListWithItems } from '@/app/app/queries'
+import EmojiPopover from '@/components/emoji-popover'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
-import { ListItem } from '@/db/schema'
 import { cn } from '@/lib/utils'
 import { AnimatePresence, motion } from 'framer-motion'
 import { TrashIcon } from 'lucide-react'
-import React, {
-  startTransition,
-  useOptimistic,
-  useRef,
-  useTransition,
-} from 'react'
+import React, { startTransition, useRef, useState } from 'react'
 
 export default function ListView({ list }: { list: ListWithItems }) {
+  const [emoji, setEmoji] = useState('')
+
   return (
     <AnimatePresence initial={false}>
       {list.listItems.map((item) => (
