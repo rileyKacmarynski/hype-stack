@@ -41,7 +41,7 @@ function ListMenuItem({ list }: { list: List }) {
       >
         <Link href={`/app/${list.id}`}>
           <div onClick={(e) => e.preventDefault()}>
-            <ListEmoji id={list.id}>{list.emoji}</ListEmoji>
+            <ListEmoji id={list.id} emoji={list.emoji} />
           </div>
           <span className="sr-only @[100px]:not-sr-only @[100px]:truncate">
             {list.name}

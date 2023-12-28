@@ -82,6 +82,7 @@ export async function updateEmoji(fields: {
   id: string | number
   emoji: string
 }) {
+  noStore()
   const validatedFields = updateEmojiSchema.safeParse(fields)
 
   if (!validatedFields.success) {
@@ -102,4 +103,5 @@ export async function updateEmoji(fields: {
 
   revalidatePath('/app', 'layout')
   revalidatePath('/app/[id]', 'layout')
+  revalidatePath('/app/[id]')
 }
