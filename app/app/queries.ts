@@ -5,12 +5,12 @@ import { desc, eq } from 'drizzle-orm'
 import { redirect } from 'next/navigation'
 import { cache } from 'react'
 
-export const getList = cache(async (id: number) => {
+export const getList = cache(async (id: string) => {
   const list = await db.query.lists.findFirst({
     with: {
       listItems: true,
     },
-    where: eq(lists.id, id),
+    where: eq(lists.referenceId, id),
   })
 
   // this component queries for the

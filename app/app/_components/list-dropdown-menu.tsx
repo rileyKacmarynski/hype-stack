@@ -40,7 +40,7 @@ export default function ListDropdownMenu({
           <PenIcon className="h-4 w-4 mr-2" /> Rename
         </DropdownMenuItem>
         <DropdownMenuItem
-          onClick={(e) => deleteList(list.id)}
+          onClick={(e) => deleteList(list.referenceId)}
           className="focus:text-rose-950 focus:bg-rose-100/60 dark:focus:bg-rose-950/30 dark:focus:text-rose-100"
         >
           <TrashIcon className="h-4 w-4 mr-2" /> Delete

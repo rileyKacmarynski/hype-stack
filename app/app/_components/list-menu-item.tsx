@@ -30,18 +30,18 @@ function ListMenuItem({ list }: { list: List }) {
   return (
     <RenamePopover list={list}>
       <Button
-        key={list.id}
+        key={list.referenceId}
         variant="ghost"
         className={cn(
           'w-full rounded-sm py-1 px-2 hover:bg-stone-200 hover:text-stone-500 group/item gap-2 justify-start h-auto',
-          Number(id) === list.id &&
+          id === list.referenceId &&
             'bg-stone-200 text-stone-600 dark:bg-stone-800 dark:text-stone-100'
         )}
         asChild
       >
-        <Link href={`/app/${list.id}`}>
+        <Link href={`/app/${list.referenceId}`}>
           <div onClick={(e) => e.preventDefault()}>
-            <ListEmoji id={list.id} emoji={list.emoji} />
+            <ListEmoji id={list.referenceId} emoji={list.emoji} />
           </div>
           <span className="sr-only @[100px]:not-sr-only @[100px]:truncate">
             {list.name}

@@ -9,7 +9,7 @@ export default function ListEmoji({
   id,
 }: {
   emoji: string
-  id: number
+  id: string
 }) {
   function changeEmoji(emoji: string) {
     startTransition(() => {

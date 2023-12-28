@@ -46,7 +46,7 @@ export default async function RootLayout({
         <div>
           <nav className="flex flex-col mb-1">
             {lists.map((l) => (
-              <ListMenuItem key={l.id} list={l} />
+              <ListMenuItem key={l.referenceId} list={l} />
             ))}
           </nav>
           <AddListButton />

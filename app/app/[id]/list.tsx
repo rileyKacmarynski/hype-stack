@@ -2,18 +2,15 @@
 
 import { createItem, deleteItem, toggleComplete } from '@/app/app/[id]/actions'
 import { ListWithItems } from '@/app/app/queries'
-import EmojiPopover from '@/components/emoji-popover'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 import { AnimatePresence, motion } from 'framer-motion'
 import { TrashIcon } from 'lucide-react'
-import React, { startTransition, useRef, useState } from 'react'
+import React, { startTransition, useRef } from 'react'
 
 export default function ListView({ list }: { list: ListWithItems }) {
-  const [emoji, setEmoji] = useState('')
-
   return (
     <AnimatePresence initial={false}>
       {list.listItems.map((item) => (
@@ -28,22 +25,22 @@ export default function ListView({ list }: { list: ListWithItems }) {
           animate={{ height: 'auto' }}
           exit={{ opacity: 0, height: 0 }}
           className="group"
-          key={item.id}
+          key={item.referenceId}
         >
           <div className="flex items-center py-1 pb-1">
-            <DeleteItem id={item.id} text={item.text} />
+            <DeleteItem id={item.referenceId} text={item.text} />
             <ToggleComplete item={item} />
           </div>
         </motion.li>
       ))}
       <li key="form">
-        <ListItemForm listId={list.id} />
+        <ListItemForm listId={list.referenceId} />
       </li>
     </AnimatePresence>
   )
 }
 
-function ListItemForm({ listId }: { listId: number }) {
+function ListItemForm({ listId }: { listId: string }) {
   const ref = useRef<HTMLFormElement | null>(null)
 
   async function onAddItem(e: React.FormEvent<HTMLFormElement>) {
@@ -70,7 +67,7 @@ function ListItemForm({ listId }: { listId: number }) {
   )
 }
 
-function DeleteItem({ id, text }: { id: number; text: string | null }) {
+function DeleteItem({ id, text }: { id: string; text: string | null }) {
   function onDelete(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     const data = new FormData(e.currentTarget)
@@ -101,7 +98,6 @@ function ToggleComplete({
   const ref = useRef<HTMLFormElement | null>(null)
 
   function onToggleCheck(e: React.FormEvent<HTMLFormElement>) {
-    console.log('in on submit')
     e.preventDefault()
     const data = new FormData(e.currentTarget)
     startTransition(() => {
@@ -112,7 +108,7 @@ function ToggleComplete({
   return (
     <>
       <form className="top-1 relative" ref={ref} onSubmit={onToggleCheck}>
-        <input type="hidden" name="listItemId" value={item.id} />
+        <input type="hidden" name="listItemId" value={item.referenceId} />
         <Checkbox
           className=""
           onCheckedChange={(e) => {
@@ -122,7 +118,7 @@ function ToggleComplete({
             ref?.current?.dispatchEvent(event)
           }}
           checked={item.completed ?? false}
-          id={`item-${item.id}`}
+          id={`item-${item.referenceId}`}
         />
       </form>
       <label
@@ -133,7 +129,7 @@ function ToggleComplete({
           item.completed &&
             'text-stone-400 dark:text-stone-400  before:bg-stone-400 before:scale-x-100'
         )}
-        htmlFor={`item-${item.id}`}
+        htmlFor={`item-${item.referenceId}`}
       >
         {item.text}
       </label>

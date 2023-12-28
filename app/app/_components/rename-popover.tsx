@@ -21,7 +21,6 @@ export function RenamePopover({
 }) {
   const { renaming, setRenaming } = useRenameStore()
   const [isPending, startTransition] = useTransition()
-  const router = useRouter()
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -51,7 +50,7 @@ export function RenamePopover({
             className="p-1 h-8"
             disabled={isPending}
           />
-          <input name="id" type="hidden" value={list.id} />
+          <input name="id" type="hidden" value={list.referenceId} />
           <Button
             aria-label="submit form"
             variant="ghost"

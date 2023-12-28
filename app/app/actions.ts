@@ -6,6 +6,7 @@ import { redirect } from 'next/navigation'
 import { getCurrentProfile } from '@/app/app/queries'
 import { revalidatePath, unstable_noStore as noStore } from 'next/cache'
 import { and, eq } from 'drizzle-orm'
+import { nanoid } from 'nanoid'
 import { z } from 'zod'
 
 export async function createList() {
@@ -16,6 +17,7 @@ export async function createList() {
     authorId: profile.id,
     name: 'Untitled',
     emoji: '📄',
+    referenceId: nanoid(),
   })
 
   revalidatePath('/app', 'layout')
@@ -28,21 +30,21 @@ export async function createListWithRedirect() {
   redirect(`/app/${insertId}`)
 }
 
-export async function deleteList(id: number) {
+export async function deleteList(id: string) {
   const profile = await getCurrentProfile()
   if (!profile) redirect('/')
 
   await db
     .delete(lists)
-    .where(and(eq(lists.id, id), eq(lists.authorId, profile.id)))
+    .where(and(eq(lists.referenceId, id), eq(lists.authorId, profile.id)))
 
   revalidatePath('/app', 'layout')
-  revalidatePath('/app/[id]', 'layout')
+  revalidatePath('/app/[id]', 'page')
 }
 
 const updateSchema = z.object({
   name: z.string().min(1),
-  id: z.coerce.number().min(1),
+  id: z.string().min(1),
 })
 
 export async function updateList(form: FormData) {
@@ -65,23 +67,20 @@ export async function updateList(form: FormData) {
   await db
     .update(lists)
     .set({ name })
-    .where(and(eq(lists.id, id), eq(lists.authorId, profile.id)))
+    .where(and(eq(lists.referenceId, id), eq(lists.authorId, profile.id)))
 
   revalidatePath('/app', 'layout')
-  revalidatePath('/app/[id]', 'layout')
+  revalidatePath('/app/[id]', 'page')
 }
 
 const updateEmojiSchema = z.object({
   emoji: z.string().emoji(),
-  id: z.coerce.number().min(1),
+  id: z.string().min(1),
 })
 
 // making this form data is probably a best practice
 // but this is easier for the emoji picker
-export async function updateEmoji(fields: {
-  id: string | number
-  emoji: string
-}) {
+export async function updateEmoji(fields: { id: string; emoji: string }) {
   noStore()
   const validatedFields = updateEmojiSchema.safeParse(fields)
 
@@ -99,9 +98,8 @@ export async function updateEmoji(fields: {
   await db
     .update(lists)
     .set({ emoji })
-    .where(and(eq(lists.id, id), eq(lists.authorId, profile.id)))
+    .where(and(eq(lists.referenceId, id), eq(lists.authorId, profile.id)))
 
   revalidatePath('/app', 'layout')
-  revalidatePath('/app/[id]', 'layout')
-  revalidatePath('/app/[id]')
+  revalidatePath('/app/[id]', 'page')
 }

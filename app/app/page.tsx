@@ -29,13 +29,13 @@ export default async function Page() {
   }
 
   const list = await db.query.lists.findFirst({
-    columns: { id: true },
+    columns: { referenceId: true },
     where: (lists, { eq }) => eq(lists.authorId, profile!.id),
     orderBy: (lists, { desc }) => [desc(lists.updatedAt)],
   })
 
   if (list) {
-    redirect(`/app/${list.id}`)
+    redirect(`/app/${list.referenceId}`)
   }
 
   return <EmptyState />

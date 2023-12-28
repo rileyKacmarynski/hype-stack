@@ -14,6 +14,8 @@ export default async function Layout({
 }) {
   const list = await getList(params.id)
 
+  console.log('running getList in Layout')
+
   return (
     <>
       <header className="flex py-1 px-6 border-b border-stone-200 dark:border-stone-800 border-1 gap-2">
