@@ -35,6 +35,9 @@ export const getUserLists = cache(async () => {
   return await db.query.lists.findMany({
     where: eq(lists.authorId, profile.id),
     orderBy: [desc(lists.updatedAt)],
+    with: {
+      listItems: true,
+    },
   })
 })
 

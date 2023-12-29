@@ -1,20 +1,22 @@
-import DropdownWrapper from '@/app/app/[id]/dropdown-wrapper'
-import ListDropdownMenu from '@/app/app/_components/list-dropdown-menu'
-import { RenameStoreProvider } from '@/app/app/_components/rename-store'
-import { getList } from '@/app/app/queries'
-import { ListIcon } from 'lucide-react'
-import React from 'react'
+'use client'
 
-export default async function Layout({
+import DropdownWrapper from '@/app/app/[id]/dropdown-wrapper'
+import { getList } from '@/app/app/queries'
+import React from 'react'
+import { useAppStore } from '../_components/app-wrapper'
+import { redirect } from 'next/navigation'
+
+export default function Layout({
   children,
   params,
 }: {
   children: React.ReactNode
-  params: { id: number }
+  params: { id: string }
 }) {
-  const list = await getList(params.id)
-
-  console.log('running getList in Layout')
+  // const list = await getList(params.id)
+  const { lists } = useAppStore()
+  const list = lists.find((l) => l.referenceId === params.id)
+  if (!list) redirect('/app')
 
   return (
     <>

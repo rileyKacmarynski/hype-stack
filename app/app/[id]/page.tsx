@@ -1,11 +1,16 @@
+'use client'
+
 import List from '@/app/app/[id]/list'
 import { getList } from '@/app/app/queries'
 import ListEmoji from '../_components/list-emoji'
+import { useAppStore } from '../_components/app-wrapper'
+import { redirect } from 'next/navigation'
 
-export default async function Page({ params }: { params: { id: string } }) {
-  const list = await getList(params.id)
-
-  console.log('calling getList from page')
+export default function Page({ params }: { params: { id: string } }) {
+  // TODO: figure out some better state management solution
+  const { lists } = useAppStore()
+  const list = lists.find((l) => l.referenceId === params.id)
+  if (!list) redirect('/app')
 
   return (
     <>

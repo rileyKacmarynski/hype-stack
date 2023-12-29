@@ -1,7 +1,7 @@
 'use client'
 
 import { createItem, deleteItem, toggleComplete } from '@/app/app/[id]/actions'
-import { ListWithItems } from '@/app/app/queries'
+import { List, ListWithItems } from '@/app/app/queries'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
@@ -9,6 +9,8 @@ import { cn } from '@/lib/utils'
 import { AnimatePresence, motion } from 'framer-motion'
 import { TrashIcon } from 'lucide-react'
 import React, { startTransition, useRef } from 'react'
+import { useAppStore } from '../_components/app-wrapper'
+import { nanoid } from 'nanoid'
 
 export default function ListView({ list }: { list: ListWithItems }) {
   return (
@@ -42,12 +44,34 @@ export default function ListView({ list }: { list: ListWithItems }) {
 
 function ListItemForm({ listId }: { listId: string }) {
   const ref = useRef<HTMLFormElement | null>(null)
+  const { setLists } = useAppStore()
 
   async function onAddItem(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+
     const data = new FormData(e.currentTarget)
-    await createItem(data)
+    const id = nanoid()
+
+    setLists((lists) =>
+      lists.map((l) => {
+        if (l.referenceId === listId) {
+          const newItem: List['listItems'][number] = {
+            referenceId: id,
+            text: data.get('text')?.toString() ?? '',
+            id: 1,
+            listId: l.id,
+            completed: false,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          }
+          return { ...l, listItems: [...l.listItems, newItem] }
+        }
+        return l
+      })
+    )
     ref.current?.reset()
+
+    await createItem(data, id)
   }
 
   return (
@@ -68,8 +92,23 @@ function ListItemForm({ listId }: { listId: string }) {
 }
 
 function DeleteItem({ id, text }: { id: string; text: string | null }) {
+  const { setLists } = useAppStore()
+
   function onDelete(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+
+    setLists((lists) =>
+      lists.map((l) => {
+        if (l.listItems.find((i) => i.referenceId === id)) {
+          return {
+            ...l,
+            listItems: l.listItems.filter((i) => i.referenceId !== id),
+          }
+        }
+        return l
+      })
+    )
+
     const data = new FormData(e.currentTarget)
     startTransition(() => {
       deleteItem(data)
@@ -96,9 +135,29 @@ function ToggleComplete({
   item: ListWithItems['listItems'][number]
 }) {
   const ref = useRef<HTMLFormElement | null>(null)
+  const { setLists } = useAppStore()
 
   function onToggleCheck(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    // yo, this sucks
+    setLists((lists) =>
+      lists.map((l) => {
+        if (l.listItems.find((i) => i.referenceId === item.referenceId)) {
+          const newList = {
+            ...l,
+            listItems: l.listItems.map((i) =>
+              i.referenceId === item.referenceId
+                ? { ...i, completed: !i.completed }
+                : i
+            ),
+          }
+
+          return newList
+        }
+        return l
+      })
+    )
+
     const data = new FormData(e.currentTarget)
     startTransition(() => {
       toggleComplete(data)

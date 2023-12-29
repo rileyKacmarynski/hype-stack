@@ -14,7 +14,7 @@ const insertSchema = z.object({
   listId: z.string().min(1),
 })
 
-export async function createItem(form: FormData) {
+export async function createItem(form: FormData, id: string) {
   noStore()
 
   const profile = await getCurrentProfile()
@@ -42,7 +42,7 @@ export async function createItem(form: FormData) {
     listId: list.id,
     text,
     completed: false,
-    referenceId: nanoid(),
+    referenceId: id,
   })
 
   revalidatePath('/app/[id]', 'page')
